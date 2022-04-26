@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsInt,
@@ -37,14 +36,17 @@ export class CreateUserDto {
 }
 
 export class GetUserQuery {
-  @IsInt()
   @IsOptional()
-  @Type(() => Number)
-  minAge: number;
-  take: number;
-  skip: number;
+  @IsInt()
+  minAge?: number;
+
+  @IsOptional()
+  take?: number;
+
+  @IsOptional()
+  skip?: number;
 
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 }
