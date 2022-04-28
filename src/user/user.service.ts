@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThanOrEqual, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { merge } from 'lodash';
 
 @Injectable()
 export class UserService {
@@ -15,30 +16,28 @@ export class UserService {
   }
 
   async findAll(query: any): Promise<User[]> {
-    const { minAge = 0, skip = 0, take = 0, name = null } = query;
+    const { minAge = '', skip = 0, take = 0, name = null } = query;
 
     let obj: {
       age?: any;
       take?: number;
       skip?: number;
-      name?: string;
     } = {};
-    let nameObj: { name?: string };
-
-    const hehe = Object.assign(obj, nameObj);
+    const nameObj: { name?: string } = { name };
+    const hehe = merge(obj, nameObj);
 
     if (minAge) {
       obj = { age: MoreThanOrEqual(minAge) };
-      if (name) {
-        obj = hehe;
-      }
     }
 
+    if (name) {
+      obj = hehe;
+      if (minAge) {
+        obj = { age: MoreThanOrEqual(minAge), ...hehe };
+      }
+    }
     if (take || skip) {
       obj = { take: take, skip: skip };
-    }
-    if (name) {
-      obj = nameObj;
     }
 
     return await this.userRepository.find(obj);
