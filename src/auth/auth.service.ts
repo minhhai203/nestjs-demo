@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MailProcessor } from 'src/mail/mail.processor';
-import { MailService } from 'src/mail/mail.service';
-import { User } from 'src/user/entities/user.entity';
+import { MailService } from '../mail/mail.service';
+import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
 import { AccountLogin } from './entities/account.entities';
@@ -14,7 +13,6 @@ export class AuthService {
     private userService: UserService,
     private jwtTokenService: JwtService,
     private mailService: MailService,
-    private mailProcessor: MailProcessor,
     @InjectRepository(AccountLogin)
     private accountFBRepository: Repository<AccountLogin>,
   ) {}

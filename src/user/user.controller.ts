@@ -9,13 +9,14 @@ import {
   Res,
   HttpStatus,
   Put,
-  UseGuards,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiOkResponse,
   ApiOperation,
@@ -45,6 +46,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all Users' })
   @ApiOkResponse({ status: 200, type: User, isArray: true })
   @ApiResponse({ status: 404, description: 'Not found...' })
