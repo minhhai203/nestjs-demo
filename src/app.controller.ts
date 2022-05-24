@@ -6,7 +6,6 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-
 import {
   ApiBearerAuth,
   ApiBody,
@@ -14,7 +13,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/login_auth/jwt-auth.guard';
 import { Account, User } from './user/entities/user.entity';
