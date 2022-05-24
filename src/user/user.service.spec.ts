@@ -1,11 +1,14 @@
 /* eslint-disable prettier/prettier */
 import { Test, TestingModule } from '@nestjs/testing';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/user.dto';
+import { User } from './entities/user.entity';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 describe('Api Get User Cac Thu', () => {
   let userService: UserService;
+  let userRepository: Repository<User>;
 
   const mockUserValue = {
     create: jest.fn((dto) => {
@@ -14,6 +17,40 @@ describe('Api Get User Cac Thu', () => {
         ...dto,
       };
     }),
+    findAll: jest.fn().mockRejectedValue([
+      {
+        id: 1,
+        name: 'Dang Minh Hai 1',
+        username: 'hai1',
+        password: '123',
+        email: 'hehe@haha.com',
+        address: 'Bac Giang',
+        age: 22,
+        isActive: true,
+      },
+      {
+        id: 2,
+        name: 'Dang Minh Hai 2',
+        username: 'hai2',
+        password: '123',
+        email: 'hehe@haha.com',
+        address: 'Bac Giang',
+        age: 20,
+        isActive: true,
+      },
+    ]),
+    findOneById: jest.fn().mockResolvedValue((id: number) =>
+      Promise.resolve({
+        id,
+        name: 'Dang Minh Hai 1',
+        username: 'hai1',
+        password: '123',
+        email: 'hehe@haha.com',
+        address: 'Bac Giang',
+        age: 22,
+        isActive: true,
+      }),
+    ),
   };
 
   beforeEach(async () => {
@@ -45,7 +82,8 @@ describe('Api Get User Cac Thu', () => {
                 isActive: true,
               },
             ]),
-            getOne: jest.fn().mockImplementation((id: string) =>
+            // getOne: jest.fn().mockImplementation((id: string) =>
+            getOne: jest.fn().mockResolvedValue((id: number) =>
               Promise.resolve({
                 id,
                 name: 'Dang Minh Hai 1',
@@ -73,6 +111,7 @@ describe('Api Get User Cac Thu', () => {
       .compile();
 
     userService = app.get<UserService>(UserService);
+    // userRepository = app.get<Repository<User>>
   });
 
   it('should be difined', () => {
@@ -103,4 +142,27 @@ describe('Api Get User Cac Thu', () => {
     });
     expect(mockUserValue.create).toHaveBeenCalled();
   });
+
+  it('should be find all user hehe', () => {
+    const query = {};
+    const users = userService.findAll(query);
+    expect(users).resolves.toEqual(mockUserValue.findAll);
+  });
+
+  // it('should be return user with id = 1', async () => {
+  //   const repo = jest.spyOn(userRepository, 'findOne');
+  //   await expect(userService.findOne(1)).resolves.toEqual(
+  //     mockUserValue.findOneById,
+  //   );
+  //   expect(repo).toBeCalledWith({
+  //     id: 1,
+  //     name: 'Dang Minh Hai 1',
+  //     username: 'hai1',
+  //     password: '123',
+  //     email: 'hehe@haha.com',
+  //     address: 'Bac Giang',
+  //     age: 22,
+  //     isActive: true,
+  //   });
+  // });
 });
